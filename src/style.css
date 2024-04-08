@@ -95,6 +95,13 @@ header button{
     color: black;
 }
 
+.chart{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 1em 1em 1em 0em;
+}
+
 @media(min-width:800px){
 
     .statistics{
