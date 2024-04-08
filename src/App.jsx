@@ -31,19 +31,19 @@ function Content(){
 
     <div className="statistics">
 
-      <StatContainer type = "info">
+      <StatContainer type = "pi">
         
       </StatContainer>
 
-      <StatContainer type="pi">
-        
-      </StatContainer>
-
-      <StatContainer type="bar">
+      <StatContainer type="info">
         
       </StatContainer>
 
       <StatContainer type="line">
+        
+      </StatContainer>
+
+      <StatContainer type="bar">
         
       </StatContainer>
 
@@ -55,7 +55,7 @@ function Content(){
 
 function StatContainer({type, children}){
 
-  return <div className='stat-container'>
+  return <div className = {`stat-container ${type}`} >
 
     <div className='secondary-header'>
       <span className='secondary-heading'>{type}</span>
