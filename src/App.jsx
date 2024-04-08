@@ -14,10 +14,12 @@ function App() {
 function Header(){
 
   return <header>
+
     <form action="submit">
       <input type="text" />
       <button>🔍</button>
     </form>
+
   </header>
 }
 
@@ -29,19 +31,19 @@ function Content(){
 
     <div className="statistics">
 
-      <StatContainer className="info">
+      <StatContainer type = "info">
         
       </StatContainer>
 
-      <StatContainer className="line">
+      <StatContainer type="pi">
         
       </StatContainer>
 
-      <StatContainer className="pi">
+      <StatContainer type="bar">
         
       </StatContainer>
 
-      <StatContainer className="bar">
+      <StatContainer type="line">
         
       </StatContainer>
 
@@ -51,13 +53,13 @@ function Content(){
 }
 
 
-function StatContainer({className, children}){
+function StatContainer({type, children}){
 
-  return <div>
+  return <div className='stat-container'>
 
-    <div>
-      <span>{className}</span>
-      <Manipulator className={className}/>
+    <div className='secondary-header'>
+      <span className='secondary-heading'>{type}</span>
+      <Manipulator type={type}/>
     </div>
 
     <div>
@@ -69,13 +71,13 @@ function StatContainer({className, children}){
 }
 
 
-function Manipulator({className}){
+function Manipulator({type}){
 
-  let op1 = className === "line"? "Yearly" : "Ascending"
+  let op1 = type === "line"? "Yearly" : "Ascending"
 
-  let op2 = className === "line"? "Monthly" : "Descending";
+  let op2 = type === "line"? "Monthly" : "Descending";
   
-  return(className !== "info")? <select name="" id="">
+  return(type !== "info")? <select name="" id="">
           <option value={op1}>{op1}</option>
           <option value={op2}>{op2}</option>
         </select> : null;
