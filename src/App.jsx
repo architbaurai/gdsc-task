@@ -5,30 +5,34 @@ import Chart from 'react-apexcharts'
 const KEY = "633efb86edba4c3182c115344240904";
 
 function App() {
+
+
+  const [symbol, setSymbol] = useState("russia");
+
   return <div className="main">
 
-    <Header/>
+    <Header symbol = {symbol} setSymbol = {setSymbol}/>
 
-    <Content/>
+    <Content symbol = {symbol}/>
 
     </div>
 }
 
 
-function Header(){
+function Header({symbol, setSymbol}){
+
+  const [temp, setTemp] = useState("");
 
   return <header>
     <form action="submit">
-      <input type="text" />
-      <button>🔍</button>
+      <input type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
+      <button onClick={(e)=>{e.preventDefault(); setSymbol(temp)}}>🔍</button>
     </form>
 
   </header>
 }
 
-function Content(){
-
-  const [symbol, setSymbol] = useState("vellore");
+function Content({symbol}){
 
   return <div className="main-container">
     
@@ -147,7 +151,7 @@ function PiChart({symbol}){
       }
     })
 
-  return <Chart options={options} series = {series} type="pie"/>
+  return <Chart options={options} series = {series} type="pie" height={'auto'} width = {'100%'}/>
 }
 
 function LineChart({symbol}){
@@ -203,7 +207,7 @@ function LineChart({symbol}){
   })
 
 
-  return <Chart options={options} series = {series} type="line"/>
+  return <Chart options={options} series = {series} type="line" height={'350px'} width = {'700px'}/>
 }
 
 
@@ -255,7 +259,7 @@ function BarChart({symbol}){
     }})
 
   
-  return <Chart options={options} series = {series} type="bar"/>
+  return <Chart options={options} series = {series} type="bar" height={'400px'} width = {'100%'}/>
 }
 
 
