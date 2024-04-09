@@ -1,6 +1,8 @@
 import './style.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'
+
+const KEY = "633efb86edba4c3182c115344240904";
 
 function App() {
   return <div className="main">
@@ -16,7 +18,6 @@ function App() {
 function Header(){
 
   return <header>
-
     <form action="submit">
       <input type="text" />
       <button>🔍</button>
@@ -27,26 +28,28 @@ function Header(){
 
 function Content(){
 
+  const [symbol, setSymbol] = useState("vellore");
+
   return <div className="main-container">
     
-    <h1>Corp. Name</h1>
+    <h1>{symbol}</h1>
 
     <div className="statistics">
 
       <StatContainer type = "pi">
-        <PiChart/>
+        <PiChart symbol = {symbol}/>
       </StatContainer>
 
       <StatContainer type="info">
-
+        <Overview symbol = {symbol}/>
       </StatContainer>
 
       <StatContainer type="line">
-      <LineChart/>
+      <LineChart symbol = {symbol}/>
       </StatContainer>
 
       <StatContainer type="bar">
-        <BarChart/>
+        <BarChart symbol = {symbol}/>
       </StatContainer>
 
     </div>
@@ -64,7 +67,7 @@ function StatContainer({type, children}){
       <Manipulator type={type}/>
     </div>
 
-    <div className='chart'>
+    <div className={`chart`}>
       {children}
     </div>
   
@@ -85,9 +88,26 @@ function Manipulator({type}){
         </select> : null;
 }
 
-function PiChart(){
+function PiChart({symbol}){
 
-  const [options, setOptions] = useState({
+  const [series, setSeries] = useState([1, 1, 1, 1, 1, 1]);
+
+  useEffect(()=>{
+
+    async function getForecast(){
+      await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
+      .then((res)=>res.json())
+      .then((res=>{
+        const piData = res.forecast.forecastday[0].day.air_quality;
+        setSeries([piData.co, piData.no2, piData.o3, piData.so2, piData.pm2_5, piData.pm10])
+      }))
+    }
+
+    getForecast();
+  },[symbol])
+
+
+  const [options, setOptions]= useState({
       
       chart: {
         width: '100%',
@@ -95,7 +115,7 @@ function PiChart(){
         fontFamily:'Open Sans',
       },
       
-      labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      labels: ["co", "no2", "o3", "so2", "pm2.5", "pm10"],
       
       theme: {
         monochrome: {
@@ -125,15 +145,29 @@ function PiChart(){
       legend: {
         show: false
       }
-    }
-  )
+    })
 
-  const [series, setSeries] = useState([25, 15, 44, 55, 41, 17])
-
-  return <Chart options={options} series={series} type="pie"/>
+  return <Chart options={options} series = {series} type="pie"/>
 }
 
-function LineChart(){
+function LineChart({symbol}){
+
+  const [series, setSeries] = useState([{
+    data: [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 } , { x: '05/28/2014', y: 26 } , { x: '06/2/2014', y: 16 } , { x: '06/8/2014', y: 46 } , { x: '06/15/2014', y: 96 }]
+  }]);
+
+  useEffect(()=>{
+    async function getForecast(){
+      await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
+      .then((res)=>res.json())
+      .then((res=>{
+        const temp = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.temp_c}});
+        setSeries([{data: temp}]);
+      }))
+    }
+    getForecast();
+  },[symbol])
+
 
   const [options, setOptions] = useState({
 
@@ -156,18 +190,11 @@ function LineChart(){
     size: 0,
   },
   fill: {
-    type: 'gradient',
-    gradient: {
-      shadeIntensity: 1,
-      inverseColors: false,
-      opacityFrom: 1,
-      opacityTo: 0.3,
-      stops: [0, 90, 100]
-    },
+    type: 'solid',
   },
   yaxis: {
     title: {
-      text: 'Price'
+      text: 'Temperature'
     }
   },
   xaxis: {
@@ -175,15 +202,42 @@ function LineChart(){
   },
   })
 
-  const [series, setSeries] = useState([{
-    data: [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 } , { x: '05/28/2014', y: 26 } , { x: '06/2/2014', y: 16 } , { x: '06/8/2014', y: 46 } , { x: '06/15/2014', y: 96 }]
-  }]);
 
   return <Chart options={options} series = {series} type="line"/>
 }
 
 
-function BarChart(){
+function BarChart({symbol}){
+
+
+  const [series, setSeries] = useState([{
+    data: [{
+      x: 'A',
+      y: 10
+    }, {
+      x: 'B',
+      y: 18
+    }, {
+      x: 'C',
+      y: 13
+    }]
+  }]);
+
+
+  useEffect(()=>{
+    async function getForecast(){
+      await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
+      .then((res)=>res.json())
+      .then((res=>{
+
+        const uv = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.uv}});
+        
+        setSeries([{data: uv}]);
+        
+      }))
+    }
+    getForecast();
+  },[symbol])
 
   const [options, setOptions] = useState({
     chart: {
@@ -200,20 +254,24 @@ function BarChart(){
       }
     }})
 
-  const [series, setSeries] = useState([{
-    data: [{
-      x: 'A',
-      y: 10
-    }, {
-      x: 'B',
-      y: 18
-    }, {
-      x: 'C',
-      y: 13
-    }]
-  }]);
-
+  
   return <Chart options={options} series = {series} type="bar"/>
+}
+
+
+function Overview({symbol}){
+
+  const [companyData, setCompanyData] = useState({
+    companyName:"International Buisness Machines",
+    companyDescription:"American multinational technology company headquartered in Armonk, New York and present in over 175 countries.[7][8] IBM is the largest industrial research organization in the world, with 19 research facilities across a dozen countries, having held the record for most annual U.S. patents generated by a business for 29 consecutive years from 1993 to 2021."
+  });
+
+
+  return <div>
+    <span><strong>{companyData.companyName}</strong></span>
+    <br/>
+    <p>{companyData.companyDescription}</p>
+  </div>
 }
 
 
