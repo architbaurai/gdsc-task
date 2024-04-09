@@ -49,6 +49,7 @@ header input{
     border: none;
     border-radius: 10px;
     font-size: 1.125rem;
+    padding: 0.5em;
 }
 
 header button{
@@ -77,6 +78,8 @@ header button{
     border-radius: 10px;
 
     margin: 1.3em 0px;
+
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .secondary-header{
@@ -109,8 +112,6 @@ header button{
     align-items: center;
     justify-content: space-evenly;
     padding: 1.5em 0em;
-    text-align: center;
-
     width: 100%;
 }
 
@@ -124,8 +125,8 @@ header button{
         grid-template-rows: minmax(300px,auto);
 
         grid-template-areas: 
-        "info pi pi"
-        "line line bar";
+        "info info pi"
+        "bar line line";
 
         gap:1em;
     }
@@ -150,4 +151,3 @@ header button{
 
 
 }
-

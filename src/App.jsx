@@ -7,7 +7,7 @@ const KEY = "633efb86edba4c3182c115344240904";
 function App() {
 
 
-  const [symbol, setSymbol] = useState("russia");
+  const [symbol, setSymbol] = useState("Vellore");
 
   return <div className="main">
 
@@ -34,26 +34,30 @@ function Header({symbol, setSymbol}){
 
 function Content({symbol}){
 
+  const[piMan, setPiMan] = useState("pie");
+  const[lineMan, setLineMan] = useState("Hourly");
+  const[barMan, setBarMan] = useState("Time-wise");
+
   return <div className="main-container">
     
     <h1>{symbol}</h1>
 
     <div className="statistics">
 
-      <StatContainer type = "pi">
-        <PiChart symbol = {symbol}/>
-      </StatContainer>
-
       <StatContainer type="info">
-        <Overview symbol = {symbol}/>
+          <Overview symbol = {symbol}/>
       </StatContainer>
 
-      <StatContainer type="line">
-      <LineChart symbol = {symbol}/>
+      <StatContainer type = "pi" setMan={setPiMan}>
+        <PiChart symbol = {symbol} piMan={piMan}/>
       </StatContainer>
 
-      <StatContainer type="bar">
-        <BarChart symbol = {symbol}/>
+      <StatContainer type="line" setMan={setLineMan}>
+      <LineChart symbol = {symbol} lineMan = {lineMan}/>
+      </StatContainer>
+
+      <StatContainer type="bar" setMan={setBarMan}>
+        <BarChart symbol = {symbol} barMan = {barMan}/>
       </StatContainer>
 
     </div>
@@ -62,13 +66,13 @@ function Content({symbol}){
 }
 
 
-function StatContainer({type, children}){
+function StatContainer({type, children, setMan}){
 
   return <div className = {`stat-container ${type}`} >
 
     <div className='secondary-header'>
       <span className='secondary-heading'>{`Pie chart`}</span>
-      <Manipulator type={type}/>
+      <Manipulator type={type} setMan={setMan}/>
     </div>
 
     <div className={`chart`}>
@@ -80,21 +84,35 @@ function StatContainer({type, children}){
 }
 
 
-function Manipulator({type}){
+function Manipulator({type, setMan}){
 
-  let op1 = type === "line"? "Yearly" : "Ascending"
+  let op1;
+  let op2;
+  let op3 = false;
 
-  let op2 = type === "line"? "Monthly" : "Descending";
-  
-  return(type !== "info")? <select name="" id="">
+  if(type === "pi"){
+    op1 = "pie";
+    op2 = "donut"
+  } else if (type === "line"){
+    op1 = "Hourly";
+    op2 = "Daily";
+  } else if (type === "bar"){
+    op1 = "Time-wise";
+    op2 = "Ascending";
+    op3 = "Descending";
+  }
+
+  return(type !== "info")? <select name="" id="" onChange={(e)=>{console.log(e.target.value); setMan((s)=>e.target.value)}}>
           <option value={op1}>{op1}</option>
           <option value={op2}>{op2}</option>
+          {op3!==false? <option value={op3}>{op3}</option> : null}
         </select> : null;
 }
 
-function PiChart({symbol}){
+function PiChart({symbol, piMan}){
 
   const [series, setSeries] = useState([1, 1, 1, 1, 1, 1]);
+
 
   useEffect(()=>{
 
@@ -111,11 +129,11 @@ function PiChart({symbol}){
   },[symbol])
 
 
-  const [options, setOptions]= useState({
+  const options = {
       
       chart: {
         width: '100%',
-        type: 'pie',
+        type: `${piMan}`,
         fontFamily:'Open Sans',
       },
       
@@ -147,14 +165,21 @@ function PiChart({symbol}){
       },
       
       legend: {
-        show: false
-      }
-    })
+        
+        show: true,
+        
+        onItemClick: {
+          toggleDataSeries: true
+        },
 
-  return <Chart options={options} series = {series} type="pie" height={'auto'} width = {'100%'}/>
+        horizontalALign: 'right',
+      }
+    }
+
+  return <Chart options={options} series = {series} type={piMan} height={'400px'} width = {'400px'}/>
 }
 
-function LineChart({symbol}){
+function LineChart({symbol, lineMan}){
 
   const [series, setSeries] = useState([{
     data: [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 } , { x: '05/28/2014', y: 26 } , { x: '06/2/2014', y: 16 } , { x: '06/8/2014', y: 46 } , { x: '06/15/2014', y: 96 }]
@@ -162,15 +187,31 @@ function LineChart({symbol}){
 
   useEffect(()=>{
     async function getForecast(){
-      await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
-      .then((res)=>res.json())
-      .then((res=>{
-        const temp = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.temp_c}});
-        setSeries([{data: temp}]);
-      }))
+
+      let timeData;
+
+      if(lineMan === "Hourly"){
+
+        await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=no&alerts=no`)
+        .then((res)=>res.json())
+        .then((res=>{
+          timeData = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.temp_c}});
+        }))
+      } else {
+
+        await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=7&aqi=no&alerts=no`)
+        .then((res)=>res.json())
+        .then((res=>{
+          timeData= res.forecast.forecastday.map((val)=>{return {x:val.date, y:val.day.avgtemp_c}});
+        }))
+      }
+
+      setSeries([{data: timeData}]);
     }
+
     getForecast();
-  },[symbol])
+
+  },[symbol, lineMan])
 
 
   const [options, setOptions] = useState({
@@ -207,11 +248,11 @@ function LineChart({symbol}){
   })
 
 
-  return <Chart options={options} series = {series} type="line" height={'350px'} width = {'700px'}/>
+  return <Chart options={options} series = {series} type="line" height={'400px'} width = {'700px'}/>
 }
 
 
-function BarChart({symbol}){
+function BarChart({symbol, barMan}){
 
 
   const [series, setSeries] = useState([{
@@ -224,24 +265,39 @@ function BarChart({symbol}){
     }, {
       x: 'C',
       y: 13
-    }]
+    }
+  ]
   }]);
 
 
   useEffect(()=>{
     async function getForecast(){
+
+      let uv;
+
+      let asc = (a, b) => a.y - b.y;
+      let dsc = (a, b) => b.y - a.y;
+
       await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
       .then((res)=>res.json())
       .then((res=>{
-
-        const uv = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.uv}});
         
+        uv = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.uv}});
+
+        if(barMan === "Ascending"){
+          uv.sort(asc);
+        } else if(barMan === "Descending"){
+          uv.sort(dsc);
+        } else{
+          uv.sort();
+        }
+  
         setSeries([{data: uv}]);
         
       }))
     }
     getForecast();
-  },[symbol])
+  },[symbol, barMan])
 
   const [options, setOptions] = useState({
     chart: {
@@ -259,22 +315,12 @@ function BarChart({symbol}){
     }})
 
   
-  return <Chart options={options} series = {series} type="bar" height={'400px'} width = {'100%'}/>
+  return <Chart options={options} series = {series} type="bar" height={'400px'} width = {'400px'}/>
 }
 
 
 function Overview({symbol}){
-
-  const [companyData, setCompanyData] = useState({
-    companyName:"International Buisness Machines",
-    companyDescription:"American multinational technology company headquartered in Armonk, New York and present in over 175 countries.[7][8] IBM is the largest industrial research organization in the world, with 19 research facilities across a dozen countries, having held the record for most annual U.S. patents generated by a business for 29 consecutive years from 1993 to 2021."
-  });
-
-
   return <div>
-    <span><strong>{companyData.companyName}</strong></span>
-    <br/>
-    <p>{companyData.companyDescription}</p>
   </div>
 }
 
