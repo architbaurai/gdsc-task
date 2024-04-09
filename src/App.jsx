@@ -1,52 +1,63 @@
 import './style.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'
 
+const KEY = "633efb86edba4c3182c115344240904";
+
 function App() {
+
+
+  const [symbol, setSymbol] = useState("Vellore");
+
   return <div className="main">
 
-    <Header/>
+    <Header symbol = {symbol} setSymbol = {setSymbol}/>
 
-    <Content/>
+    <Content symbol = {symbol}/>
 
     </div>
 }
 
 
-function Header(){
+function Header({symbol, setSymbol}){
+
+  const [temp, setTemp] = useState("");
 
   return <header>
-
     <form action="submit">
-      <input type="text" />
-      <button>🔍</button>
+      <input type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
+      <button onClick={(e)=>{e.preventDefault(); setSymbol(temp)}}>🔍</button>
     </form>
 
   </header>
 }
 
-function Content(){
+function Content({symbol}){
+
+  const[piMan, setPiMan] = useState("pie");
+  const[lineMan, setLineMan] = useState("Hourly");
+  const[barMan, setBarMan] = useState("Time-wise");
 
   return <div className="main-container">
     
-    <h1>Corp. Name</h1>
+    <h1>{symbol}</h1>
 
     <div className="statistics">
 
-      <StatContainer type = "pi">
-        <PiChart/>
-      </StatContainer>
-
       <StatContainer type="info">
-
+          <Overview symbol = {symbol}/>
       </StatContainer>
 
-      <StatContainer type="line">
-      <LineChart/>
+      <StatContainer type = "pi" setMan={setPiMan}>
+        <PiChart symbol = {symbol} piMan={piMan}/>
       </StatContainer>
 
-      <StatContainer type="bar">
-        <BarChart/>
+      <StatContainer type="line" setMan={setLineMan}>
+      <LineChart symbol = {symbol} lineMan = {lineMan}/>
+      </StatContainer>
+
+      <StatContainer type="bar" setMan={setBarMan}>
+        <BarChart symbol = {symbol} barMan = {barMan}/>
       </StatContainer>
 
     </div>
@@ -55,16 +66,16 @@ function Content(){
 }
 
 
-function StatContainer({type, children}){
+function StatContainer({type, children, setMan}){
 
   return <div className = {`stat-container ${type}`} >
 
     <div className='secondary-header'>
       <span className='secondary-heading'>{`Pie chart`}</span>
-      <Manipulator type={type}/>
+      <Manipulator type={type} setMan={setMan}/>
     </div>
 
-    <div className='chart'>
+    <div className={`chart`}>
       {children}
     </div>
   
@@ -73,29 +84,60 @@ function StatContainer({type, children}){
 }
 
 
-function Manipulator({type}){
+function Manipulator({type, setMan}){
 
-  let op1 = type === "line"? "Yearly" : "Ascending"
+  let op1;
+  let op2;
+  let op3 = false;
 
-  let op2 = type === "line"? "Monthly" : "Descending";
-  
-  return(type !== "info")? <select name="" id="">
+  if(type === "pi"){
+    op1 = "pie";
+    op2 = "donut"
+  } else if (type === "line"){
+    op1 = "Hourly";
+    op2 = "Daily";
+  } else if (type === "bar"){
+    op1 = "Time-wise";
+    op2 = "Ascending";
+    op3 = "Descending";
+  }
+
+  return(type !== "info")? <select name="" id="" onChange={(e)=>{console.log(e.target.value); setMan((s)=>e.target.value)}}>
           <option value={op1}>{op1}</option>
           <option value={op2}>{op2}</option>
+          {op3!==false? <option value={op3}>{op3}</option> : null}
         </select> : null;
 }
 
-function PiChart(){
+function PiChart({symbol, piMan}){
 
-  const [options, setOptions] = useState({
+  const [series, setSeries] = useState([1, 1, 1, 1, 1, 1]);
+
+
+  useEffect(()=>{
+
+    async function getForecast(){
+      await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
+      .then((res)=>res.json())
+      .then((res=>{
+        const piData = res.forecast.forecastday[0].day.air_quality;
+        setSeries([piData.co, piData.no2, piData.o3, piData.so2, piData.pm2_5, piData.pm10])
+      }))
+    }
+
+    getForecast();
+  },[symbol])
+
+
+  const options = {
       
       chart: {
         width: '100%',
-        type: 'pie',
+        type: `${piMan}`,
         fontFamily:'Open Sans',
       },
       
-      labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      labels: ["co", "no2", "o3", "so2", "pm2.5", "pm10"],
       
       theme: {
         monochrome: {
@@ -123,17 +165,54 @@ function PiChart(){
       },
       
       legend: {
-        show: false
+        
+        show: true,
+        
+        onItemClick: {
+          toggleDataSeries: true
+        },
+
+        horizontalALign: 'right',
       }
     }
-  )
 
-  const [series, setSeries] = useState([25, 15, 44, 55, 41, 17])
-
-  return <Chart options={options} series={series} type="pie"/>
+  return <Chart options={options} series = {series} type={piMan} height={'400px'} width = {'400px'}/>
 }
 
-function LineChart(){
+function LineChart({symbol, lineMan}){
+
+  const [series, setSeries] = useState([{
+    data: [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 } , { x: '05/28/2014', y: 26 } , { x: '06/2/2014', y: 16 } , { x: '06/8/2014', y: 46 } , { x: '06/15/2014', y: 96 }]
+  }]);
+
+  useEffect(()=>{
+    async function getForecast(){
+
+      let timeData;
+
+      if(lineMan === "Hourly"){
+
+        await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=no&alerts=no`)
+        .then((res)=>res.json())
+        .then((res=>{
+          timeData = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.temp_c}});
+        }))
+      } else {
+
+        await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=7&aqi=no&alerts=no`)
+        .then((res)=>res.json())
+        .then((res=>{
+          timeData= res.forecast.forecastday.map((val)=>{return {x:val.date, y:val.day.avgtemp_c}});
+        }))
+      }
+
+      setSeries([{data: timeData}]);
+    }
+
+    getForecast();
+
+  },[symbol, lineMan])
+
 
   const [options, setOptions] = useState({
 
@@ -156,18 +235,11 @@ function LineChart(){
     size: 0,
   },
   fill: {
-    type: 'gradient',
-    gradient: {
-      shadeIntensity: 1,
-      inverseColors: false,
-      opacityFrom: 1,
-      opacityTo: 0.3,
-      stops: [0, 90, 100]
-    },
+    type: 'solid',
   },
   yaxis: {
     title: {
-      text: 'Price'
+      text: 'Temperature'
     }
   },
   xaxis: {
@@ -175,15 +247,57 @@ function LineChart(){
   },
   })
 
-  const [series, setSeries] = useState([{
-    data: [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 } , { x: '05/28/2014', y: 26 } , { x: '06/2/2014', y: 16 } , { x: '06/8/2014', y: 46 } , { x: '06/15/2014', y: 96 }]
-  }]);
 
-  return <Chart options={options} series = {series} type="line"/>
+  return <Chart options={options} series = {series} type="line" height={'400px'} width = {'700px'}/>
 }
 
 
-function BarChart(){
+function BarChart({symbol, barMan}){
+
+
+  const [series, setSeries] = useState([{
+    data: [{
+      x: 'A',
+      y: 10
+    }, {
+      x: 'B',
+      y: 18
+    }, {
+      x: 'C',
+      y: 13
+    }
+  ]
+  }]);
+
+
+  useEffect(()=>{
+    async function getForecast(){
+
+      let uv;
+
+      let asc = (a, b) => a.y - b.y;
+      let dsc = (a, b) => b.y - a.y;
+
+      await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
+      .then((res)=>res.json())
+      .then((res=>{
+        
+        uv = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.uv}});
+
+        if(barMan === "Ascending"){
+          uv.sort(asc);
+        } else if(barMan === "Descending"){
+          uv.sort(dsc);
+        } else{
+          uv.sort();
+        }
+  
+        setSeries([{data: uv}]);
+        
+      }))
+    }
+    getForecast();
+  },[symbol, barMan])
 
   const [options, setOptions] = useState({
     chart: {
@@ -200,20 +314,14 @@ function BarChart(){
       }
     }})
 
-  const [series, setSeries] = useState([{
-    data: [{
-      x: 'A',
-      y: 10
-    }, {
-      x: 'B',
-      y: 18
-    }, {
-      x: 'C',
-      y: 13
-    }]
-  }]);
+  
+  return <Chart options={options} series = {series} type="bar" height={'400px'} width = {'400px'}/>
+}
 
-  return <Chart options={options} series = {series} type="bar"/>
+
+function Overview({symbol}){
+  return <div>
+  </div>
 }
 
 
