@@ -26,7 +26,7 @@ function Header({symbol, setSymbol}){
   return <header>
     <form action="submit">
       <input type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
-      <button onClick={(e)=>{e.preventDefault(); setSymbol(temp)}}>🔍</button>
+      <button onClick={(e)=>{e.preventDefault(); setSymbol(temp)}}>Search</button>
     </form>
 
   </header>
@@ -132,7 +132,6 @@ function PiChart({symbol, piMan}){
   const options = {
       
       chart: {
-        width: '100%',
         type: `${piMan}`,
         fontFamily:'Open Sans',
       },
@@ -173,7 +172,38 @@ function PiChart({symbol, piMan}){
         },
 
         horizontalALign: 'right',
-      }
+
+        position: 'right'
+      },
+
+      responsive: [{
+        breakpoint: 1000,
+        options: {
+          chart:{
+            width:'400px'
+          },
+          legend:{
+            position: 'right'
+          }
+        }
+      },{
+        breakpoint: 420,
+        options: {
+          chart:{
+            width:'300px'
+          },
+          legend:{
+            position:'bottom'
+          }
+        }
+      },{
+        breakpoint: 300,
+        options: {
+          chart:{
+            width:'240px'
+          }
+        }
+      }]
     }
 
   return <Chart options={options} series = {series} type={piMan} height={'400px'} width = {'400px'}/>
@@ -245,7 +275,55 @@ function LineChart({symbol, lineMan}){
   xaxis: {
     type: 'datetime',
   },
-  })
+  responsive: [{
+    breakpoint: 1350,
+    options: {
+      chart:{
+        width:'600px'
+      },
+      legend:{
+        position: 'right'
+      }
+    }
+  },{
+    breakpoint: 1250,
+    options: {
+      chart:{
+        width:'500px'
+      },
+      legend:{
+        position: 'right'
+      }
+    }
+  },{
+    breakpoint: 1100,
+    options: {
+      chart:{
+        width:'400px'
+      },
+      legend:{
+        position: 'right'
+      }
+    }
+  },{
+    breakpoint: 420,
+    options: {
+      chart:{
+        width:'300px'
+      },
+      legend:{
+        position:'bottom'
+      }
+    }
+  },{
+    breakpoint: 300,
+    options: {
+      chart:{
+        width:'220px'
+      }
+    }
+  }]
+})
 
 
   return <Chart options={options} series = {series} type="line" height={'400px'} width = {'700px'}/>
@@ -312,10 +390,40 @@ function BarChart({symbol, barMan}){
       bar: {
         horizontal: true
       }
-    }})
+    },
+
+    responsive: [{
+      breakpoint: 1000,
+      options: {
+        chart:{
+          width:'400px'
+        },
+        legend:{
+          position: 'right'
+        }
+      }
+    },{
+      breakpoint: 420,
+      options: {
+        chart:{
+          width:'300px'
+        },
+        legend:{
+          position:'bottom'
+        }
+      }
+    },{
+      breakpoint: 300,
+      options: {
+        chart:{
+          width:'220px'
+        }
+      }
+    }]
+  })
 
   
-  return <Chart options={options} series = {series} type="bar" height={'400px'} width = {'400px'}/>
+  return <Chart options={options} series = {series} type="bar" height={'400px'} width={'400px'}/>
 }
 
 
