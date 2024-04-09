@@ -4,6 +4,14 @@ body{
     background-color: #DEE2E6;
 }
 
+img{
+    max-width: 100%;
+    object-fit: cover;
+    width: 100%;
+    min-height: 20px;
+    width: 80px;
+}
+
 .main{
     margin: 0;
 }
@@ -115,6 +123,30 @@ header button{
     width: 100%;
 }
 
+.info-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.weather-info{
+    width: 90%;
+}
+
+.weather-info p{
+    font-size: 1.5em;
+    line-height: 0.2em;
+}
+
+.map{
+    background-color: greenyellow;
+    width: 90%;
+    border-radius: 10px;
+
+    height: 300px;
+}
+
 @media(min-width:1000px){
 
     .statistics{
@@ -144,10 +176,20 @@ header button{
         grid-area: bar;
     }
 
-
     header form{
         flex-direction: row;
     }
 
+    .info-card{
+        flex-direction: row;
+        justify-content: space-around;
+    }
 
+    .map{
+        width: 50%;
+    }
+
+    .weather-info{
+        width: 40%;
+    }
 }

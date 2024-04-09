@@ -102,7 +102,7 @@ function Manipulator({type, setMan}){
     op3 = "Descending";
   }
 
-  return(type !== "info")? <select name="" id="" onChange={(e)=>{console.log(e.target.value); setMan((s)=>e.target.value)}}>
+  return(type !== "info" && type !== "map")? <select name="" id="" onChange={(e)=>{console.log(e.target.value); setMan((s)=>e.target.value)}}>
           <option value={op1}>{op1}</option>
           <option value={op2}>{op2}</option>
           {op3!==false? <option value={op3}>{op3}</option> : null}
@@ -428,7 +428,52 @@ function BarChart({symbol, barMan}){
 
 
 function Overview({symbol}){
-  return <div>
+
+  const [inf, setInf] = useState(["Vellore", "Tamil Nadu", "India", 12.93, 79.13, "", 22.3, ""]);
+
+  useEffect(()=>{
+    async function getCurrent(){
+
+      await fetch(`http://api.weatherapi.com/v1/current.json?key=633efb86edba4c3182c115344240904&q=${symbol}&aqi=no`)
+      .then((res)=>res.json())
+      .then((res)=>{
+
+        let city = res.location.name;
+        let region = res.location.region;
+        let country = res.location.country;
+
+        let lat = res.location.lat;
+        let lon = res.location.lon;
+
+        let ico = res.current.condition.icon;
+        let temp = res.current.temp_c;
+        let cond = res.current.condition.text;
+
+
+
+        setInf([city, region, country, lat, lon, ico, temp, cond]);
+
+        console.log(inf);
+      })
+    }
+
+    getCurrent();
+  },[symbol])
+
+  return <div className='info-card'>
+    <div className="weather-info">
+
+      <h3>{inf[0]},</h3>
+      <h3>{inf[1]}, {inf[2]}</h3>
+      <img src={inf[5]} alt="" />
+      <p>{inf[6]}°C,</p>
+      <p>{inf[7]}</p>
+
+      <div className="soc"></div>
+    </div>
+
+    <div className="map">
+    </div>
   </div>
 }
 
