@@ -6,10 +6,16 @@ body{
 
 img{
     max-width: 100%;
-    object-fit: cover;
-    width: 100%;
+    object-fit:contain;
     min-height: 20px;
-    width: 80px;
+    width: 100px;
+}
+
+.temp-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 1em;
 }
 
 .main{
@@ -164,6 +170,7 @@ header button{
 
 .temperature{
     display: flex;
+    flex-direction: column;
     margin: 1em 0;
 }
 
@@ -211,5 +218,9 @@ header button{
 
     .weather-info{
         width: 40%;
+    }
+
+    .temperature{
+        flex-direction: row;
     }
 }
