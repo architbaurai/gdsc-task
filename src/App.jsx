@@ -15,7 +15,6 @@ function App() {
   return <div className="main">
 
     <Header setSymbol = {setSymbol}/>
-
     <Content symbol = {symbol}/>
 
     </div>
@@ -33,8 +32,8 @@ function Header({setSymbol}){
     <p className="logo">Weather Co.</p>
 
     <form action="submit">
-      <input type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
-      <button onClick={(e)=>{e.preventDefault(); if(temp !== "") {setSymbol(prev=>{prev.set("symbol",temp); return prev;})} e.target.value = '';}}><strong>Search</strong></button>
+      <input value = {temp} type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
+      <button onClick={(e)=>{e.preventDefault(); if(temp !== "") {setSymbol(prev=>{prev.set("symbol",temp); return prev;})} setTemp((s)=>"");}}><strong>Search</strong></button>
     </form>
 
     </div>
@@ -48,29 +47,60 @@ function Content({symbol}){
   const[lineMan, setLineMan] = useState("Hourly");
   const[barMan, setBarMan] = useState("Time-wise");
 
-  return <div className="main-container">
-    
-    <div className="statistics">
+  const[overlayState, setOverlayState] = useSearchParams({overlay:""});
 
-      <StatContainer type="info">
-          <Overview symbol = {symbol}/>
-      </StatContainer>
+  const overlay = overlayState.get('overlay');
 
-      <StatContainer type = "pi" setMan={setPiMan}>
-        <PiChart symbol = {symbol} piMan={piMan}/>
-      </StatContainer>
+  const chartComp = new Map();
 
-      <StatContainer type="line" setMan={setLineMan}>
-      <LineChart symbol = {symbol} lineMan = {lineMan}/>
-      </StatContainer>
+  chartComp.set('pi', <><StatContainer type = "pi" setMan={setPiMan}>
+                        <PiChart symbol = {symbol} piMan={piMan} overlay = {overlay} setOverlayState={setOverlayState}/>
+                      </StatContainer>
+                      <Socials fb = {null} tw = {null} rd = {null} wa = {null}/>
+                      </>);
 
-      <StatContainer type="bar" setMan={setBarMan}>
-        <BarChart symbol = {symbol} barMan = {barMan}/>
-      </StatContainer>
+  chartComp.set('line',<><StatContainer type="line" setMan={setLineMan}>
+                          <LineChart symbol = {symbol} lineMan = {lineMan} overlay = {overlay} setOverlayState={setOverlayState}/>
+                        </StatContainer>
+                        <Socials fb = {null} tw = {null} rd = {null} wa = {null}/>
+                        </>)
 
+  chartComp.set('bar',<><StatContainer type="bar" setMan={setBarMan}>
+                        <BarChart symbol = {symbol} barMan = {barMan} overlay = {overlay} setOverlayState={setOverlayState}/>
+                       </StatContainer>
+                       <Socials fb = {null} tw = {null} rd = {null} wa = {null}/>                     
+                      </>)
+
+
+  return <>
+
+    <div className="main-container">
+
+      <div className="overlay">
+        {overlay===""? null : chartComp.get(overlay)}
+      </div>
+  
+      <div className="statistics" style={overlay===""? null : {zIndex:"0", filter:"blur(1.25em)", pointerEvents:"none"}}>
+
+        <StatContainer type="info">
+            <Overview symbol = {symbol}/>
+        </StatContainer>
+
+        <StatContainer type = "pi" setMan={setPiMan}>
+          <PiChart symbol = {symbol} piMan={piMan} overlay = {overlay} setOverlayState={setOverlayState}/>
+        </StatContainer>
+
+        <StatContainer type="line" setMan={setLineMan}>
+        <LineChart symbol = {symbol} lineMan = {lineMan} overlay = {overlay} setOverlayState={setOverlayState}/>
+        </StatContainer>
+
+        <StatContainer type="bar" setMan={setBarMan}>
+          <BarChart symbol = {symbol} barMan = {barMan} overlay = {overlay} setOverlayState={setOverlayState}/>
+        </StatContainer>
+
+      </div>
     </div>
-
-  </div>
+  </>
 }
 
 
@@ -124,7 +154,7 @@ function Manipulator({type, setMan}){
         </select> : null;
 }
 
-function PiChart({symbol, piMan}){
+function PiChart({symbol, piMan, overlay, setOverlayState}){
 
   const [series, setSeries] = useState([1, 1, 1, 1, 1, 1]);
 
@@ -221,10 +251,16 @@ function PiChart({symbol, piMan}){
       }]
     }
 
-  return <Chart options={options} series = {series} type={piMan} height={'400px'} width = {'400px'}/>
+  return <>
+    <Chart options={options} series = {series} type={piMan} height={'400px'} width = {'400px'}/>
+    <p className='exp-button' onClick={()=>{
+      if(overlay===""){setOverlayState(prev=>{prev.set("overlay","pi"); return prev;})}
+      else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
+      }}>Expand</p>
+  </>
 }
 
-function LineChart({symbol, lineMan}){
+function LineChart({symbol, lineMan, overlay, setOverlayState}){
 
   const [series, setSeries] = useState([{
     data: [{ x: '05/06/2014', y: 54 }, { x: '05/08/2014', y: 17 } , { x: '05/28/2014', y: 26 } , { x: '06/2/2014', y: 16 } , { x: '06/8/2014', y: 46 } , { x: '06/15/2014', y: 96 }]
@@ -341,11 +377,17 @@ function LineChart({symbol, lineMan}){
 })
 
 
-  return <Chart options={options} series = {series} type="line" height={'400px'} width = {'700px'}/>
+  return<>
+    <Chart options={options} series = {series} type="line" height={'400px'} width = {'700px'}/>
+    <p className='exp-button' onClick={()=>{
+      if(overlay===""){setOverlayState(prev=>{prev.set("overlay","line"); return prev;})}
+      else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
+      }}>Expand</p>
+  </>
 }
 
 
-function BarChart({symbol, barMan}){
+function BarChart({symbol, barMan, overlay, setOverlayState}){
 
 
   const [series, setSeries] = useState([{
@@ -438,7 +480,13 @@ function BarChart({symbol, barMan}){
   })
 
   
-  return <Chart options={options} series = {series} type="bar" height={'400px'} width={'400px'}/>
+  return <>
+    <Chart options={options} series = {series} type="bar" height={'400px'} width={'400px'}/>
+    <p className='exp-button' onClick={()=>{
+      if(overlay===""){setOverlayState(prev=>{prev.set("overlay","bar"); return prev;})}
+      else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
+      }}>Expand</p>
+  </>
 }
 
 
@@ -514,22 +562,24 @@ function Overview({symbol}){
       </div>
       </div>
 
-      <div className="date">
-        
-      </div>
+      <Socials fb = {fb_link} tw = {tw_link} rd = {rd_link} wa = {wa_link}/>
 
-      <div className="soc">
-
-        <a href={fb_link} className="facebook" target ="blank"><i className="fab fa-facebook"></i></a>
-        <a href={tw_link} className="twitter" target ="blank"><i className="fab fa-twitter"></i></a>
-        <a href={rd_link} className="reddit" target ="blank"><i className="fab fa-reddit"></i></a>
-        <a href={wa_link} className="whatsapp" target ="blank"><div className="fab fa-whatsapp"></div></a>
-      </div>
     </div>
 
     <div className="map">
       {map}
     </div>
+  </div>
+}
+
+function Socials({fb, tw, rd, wa}){
+
+  return <div className="soc">
+
+    <a href={fb} className="facebook" target ="blank"><i className="fab fa-facebook"></i></a>
+    <a href={tw} className="twitter" target ="blank"><i className="fab fa-twitter"></i></a>
+    <a href={rd} className="reddit" target ="blank"><i className="fab fa-reddit"></i></a>
+    <a href={wa} className="whatsapp" target ="blank"><div className="fab fa-whatsapp"></div></a>
   </div>
 }
 

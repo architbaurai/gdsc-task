@@ -133,6 +133,7 @@ header button:hover{
 
 .chart{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
     padding: 1.5em 0em;
@@ -262,3 +263,12 @@ header button:hover{
         flex-direction: row;
     }
 }
+
+.overlay{
+    position: absolute;
+    left: 50%;
+    top: 62.5%;
+    transform: translate(-50%,-50%);
+    z-index: 2;
+}
+
