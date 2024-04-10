@@ -132,19 +132,26 @@ header button{
 
 .weather-info{
     width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+.soc{
+    height: 50px;
+    margin-bottom: 0.5em;
 }
 
 .weather-info p{
     font-size: 1.5em;
-    line-height: 0.2em;
+    margin:0.2em 0.1em;
 }
 
 .map{
-    background-color: greenyellow;
     width: 90%;
     border-radius: 10px;
+    border: black 6px solid;
 
-    height: 300px;
+    height: 280px;
 }
 
 @media(min-width:1000px){

@@ -1,8 +1,7 @@
 import './style.css';
 import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'
-
-const KEY = "633efb86edba4c3182c115344240904";
+import { ReactBingmaps } from 'react-bingmaps';
 
 function App() {
 
@@ -102,7 +101,7 @@ function Manipulator({type, setMan}){
     op3 = "Descending";
   }
 
-  return(type !== "info" && type !== "map")? <select name="" id="" onChange={(e)=>{console.log(e.target.value); setMan((s)=>e.target.value)}}>
+  return(type !== "info" && type !== "map")? <select name="" id="" onChange={(e)=>{setMan((s)=>e.target.value)}}>
           <option value={op1}>{op1}</option>
           <option value={op2}>{op2}</option>
           {op3!==false? <option value={op3}>{op3}</option> : null}
@@ -449,30 +448,43 @@ function Overview({symbol}){
         let temp = res.current.temp_c;
         let cond = res.current.condition.text;
 
-
-
         setInf([city, region, country, lat, lon, ico, temp, cond]);
-
-        console.log(inf);
       })
     }
 
     getCurrent();
-  },[symbol])
+  },[symbol, inf])
 
   return <div className='info-card'>
     <div className="weather-info">
 
-      <h3>{inf[0]},</h3>
-      <h3>{inf[1]}, {inf[2]}</h3>
+      <div>
+      <p><strong>{inf[0]},</strong></p>
+      <p><strong>{inf[1]}, {inf[2]}</strong></p>
       <img src={inf[5]} alt="" />
       <p>{inf[6]}°C,</p>
       <p>{inf[7]}</p>
+      </div>
 
-      <div className="soc"></div>
+
+      <div className="soc">
+
+      </div>
     </div>
 
     <div className="map">
+      <ReactBingmaps 
+        bingmapKey = "AnNq5ZsNTOez4ZTeBDa-N3yrvAgAszEv8XTFP9dVvsm-hm7ykBgVffLZAxVjs1t5" 
+        center = {[inf[3], inf[4]]}
+        pushPins = {
+          [
+            {
+              "location":[inf[3], inf[4]], "option":{ color: '#2F80ED' }
+            }
+          ]
+        }
+      > 
+      </ReactBingmaps>
     </div>
   </div>
 }
