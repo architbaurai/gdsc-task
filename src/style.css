@@ -4,6 +4,14 @@ body{
     background-color: #DEE2E6;
 }
 
+img{
+    max-width: 100%;
+    object-fit: cover;
+    width: 100%;
+    min-height: 20px;
+    width: 80px;
+}
+
 .main{
     margin: 0;
 }
@@ -47,7 +55,7 @@ header form{
 header input{
     width: 100%;
     border: none;
-    border-radius: 10px;
+    border-radius: 100px;
     font-size: 1.125rem;
     padding: 0.5em;
 }
@@ -115,6 +123,50 @@ header button{
     width: 100%;
 }
 
+.info-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.weather-info{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+.soc{
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 0.5em;
+}
+
+.fab{
+    font-size: 1.5em;
+    color: #2F80ED;
+}
+
+.weather-info p{
+    font-size: 1.5em;
+    margin:0.2em 0.1em;
+}
+
+.map{
+    width: 90%;
+    border-radius: 10px;
+    border: black 6px solid;
+
+    height: 280px;
+}
+
+.temperature{
+    display: flex;
+    margin: 1em 0;
+}
+
 @media(min-width:1000px){
 
     .statistics{
@@ -144,10 +196,20 @@ header button{
         grid-area: bar;
     }
 
-
     header form{
         flex-direction: row;
     }
 
+    .info-card{
+        flex-direction: row;
+        justify-content: space-around;
+    }
 
+    .map{
+        width: 50%;
+    }
+
+    .weather-info{
+        width: 40%;
+    }
 }

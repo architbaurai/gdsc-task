@@ -1,11 +1,9 @@
 import './style.css';
 import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'
-
-const KEY = "633efb86edba4c3182c115344240904";
+import { ReactBingmaps } from 'react-bingmaps';
 
 function App() {
-
 
   const [symbol, setSymbol] = useState("Vellore");
 
@@ -40,7 +38,7 @@ function Content({symbol}){
 
   return <div className="main-container">
     
-    <h1>{symbol}</h1>
+    {/* <h1>{symbol}</h1> */}
 
     <div className="statistics">
 
@@ -102,7 +100,7 @@ function Manipulator({type, setMan}){
     op3 = "Descending";
   }
 
-  return(type !== "info")? <select name="" id="" onChange={(e)=>{console.log(e.target.value); setMan((s)=>e.target.value)}}>
+  return(type !== "info" && type !== "map")? <select name="" id="" onChange={(e)=>{setMan((s)=>e.target.value)}}>
           <option value={op1}>{op1}</option>
           <option value={op2}>{op2}</option>
           {op3!==false? <option value={op3}>{op3}</option> : null}
@@ -428,7 +426,76 @@ function BarChart({symbol, barMan}){
 
 
 function Overview({symbol}){
-  return <div>
+
+  const [inf, setInf] = useState(["Vellore", "Tamil Nadu", "India", 12.93, 79.13, "", 22.3, ""]);
+
+  useEffect(()=>{
+    async function getCurrent(){
+
+      await fetch(`http://api.weatherapi.com/v1/current.json?key=633efb86edba4c3182c115344240904&q=${symbol}&aqi=no`)
+      .then((res)=>res.json())
+      .then((res)=>{
+
+        let city = res.location.name;
+        let region = res.location.region;
+        let country = res.location.country;
+
+        let lat = res.location.lat;
+        let lon = res.location.lon;
+
+        let ico = res.current.condition.icon;
+        let temp = res.current.temp_c;
+        let cond = res.current.condition.text;
+
+        setInf([city, region, country, lat, lon, ico, temp, cond]);
+      })
+    }
+
+    getCurrent();
+  },[symbol, inf])
+
+  return <div className='info-card'>
+    <div className="weather-info">
+
+      <div>
+      <p><strong>{inf[0]},</strong></p>
+      <p><strong>{inf[1]}, {inf[2]}</strong></p>
+      <div className="temperature">
+      <img src={inf[5]} alt="" />
+      <div>
+        <p>{inf[6]}°C</p>
+        <p>{inf[7]}</p>
+      </div>
+      </div>
+      </div>
+
+      <div className="date">
+        
+      </div>
+
+      <div className="soc">
+
+        <a href="none" className="facebook" target ="blank"><i className="fab fa-facebook"></i></a>
+        <a href="none" className="twitter" target ="blank"><i className="fab fa-twitter"></i></a>
+        <a href="none" className="reddit" target ="blank"><i className="fab fa-reddit"></i></a>
+        <a href="none" className="whatsapp" target ="blank"><div className="fab fa-whatsapp"></div></a>
+      </div>
+    </div>
+
+    <div className="map">
+      <ReactBingmaps 
+        bingmapKey = "AnNq5ZsNTOez4ZTeBDa-N3yrvAgAszEv8XTFP9dVvsm-hm7ykBgVffLZAxVjs1t5" 
+        center = {[inf[3], inf[4]]}
+        pushPins = {
+          [
+            {
+              "location":[inf[3], inf[4]], "option":{ color: '#2F80ED' }
+            }
+          ]
+        }
+      > 
+      </ReactBingmaps>
+    </div>
   </div>
 }
 
