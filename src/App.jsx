@@ -431,6 +431,7 @@ function BarChart({symbol, barMan}){
 function Overview({symbol}){
 
   const [inf, setInf] = useState(["Vellore", "Tamil Nadu", "India", 12.93, 79.13, "", 22.3, ""]);
+  const [map, setMap] = useState(null);
 
   useEffect(()=>{
     async function getCurrent(){
@@ -451,11 +452,28 @@ function Overview({symbol}){
         let cond = res.current.condition.text;
 
         setInf([city, region, country, lat, lon, ico, temp, cond]);
-      })
+
+        return res;
+      }).then((res=>{
+        setMap(
+          <ReactBingmaps 
+            bingmapKey = "AnNq5ZsNTOez4ZTeBDa-N3yrvAgAszEv8XTFP9dVvsm-hm7ykBgVffLZAxVjs1t5" 
+            center = {[res.location.lat, res.location.lon]}
+            pushPins = {
+              [
+                {
+                  "location":[res.location.lat, res.location.lon], "option":{ color: '#2F80ED' }
+                }
+              ]
+            }
+            > 
+          </ReactBingmaps>
+        )
+      }))
     }
 
     getCurrent();
-  },[symbol, inf])
+  },[symbol])
 
   const link = encodeURI(window.location.href);
   const msg = encodeURI(`Hey ! Checkout the climate analysis of ${symbol}:\n`)
@@ -496,18 +514,7 @@ function Overview({symbol}){
     </div>
 
     <div className="map">
-      <ReactBingmaps 
-        bingmapKey = "AnNq5ZsNTOez4ZTeBDa-N3yrvAgAszEv8XTFP9dVvsm-hm7ykBgVffLZAxVjs1t5" 
-        center = {[inf[3], inf[4]]}
-        pushPins = {
-          [
-            {
-              "location":[inf[3], inf[4]], "option":{ color: '#2F80ED' }
-            }
-          ]
-        }
-      > 
-      </ReactBingmaps>
+      {map}
     </div>
   </div>
 }
@@ -515,3 +522,18 @@ function Overview({symbol}){
 
 
 export default App;
+
+
+
+{/* <ReactBingmaps 
+bingmapKey = "AnNq5ZsNTOez4ZTeBDa-N3yrvAgAszEv8XTFP9dVvsm-hm7ykBgVffLZAxVjs1t5" 
+center = {[inf[3], inf[4]]}
+pushPins = {
+  [
+    {
+      "location":[inf[3], inf[4]], "option":{ color: '#2F80ED' }
+    }
+  ]
+}
+> 
+</ReactBingmaps> */}
