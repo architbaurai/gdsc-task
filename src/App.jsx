@@ -76,7 +76,7 @@ function Content({symbol}){
 
     <div className="main-container">
 
-      <div className="overlay">
+      <div className="overlay" id='overlay'>
         {overlay===""? null : chartComp.get(overlay)}
       </div>
   
@@ -257,7 +257,7 @@ function PiChart({symbol, piMan, overlay, setOverlayState}){
       <span className='exp-button' onClick={()=>{
         if(overlay===""){setOverlayState(prev=>{prev.set("overlay","pi"); return prev;})}
         else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
-        }}>Expand</span>
+        }}><a href='#overlay'>{overlay!==""? "close" : <img src="exp.png" alt="exp" />}</a></span>
     </div>
   </div>
 }
@@ -271,7 +271,7 @@ function LineChart({symbol, lineMan, overlay, setOverlayState}){
   useEffect(()=>{
     async function getForecast(){
 
-      let timeData;
+      let timeData; 
 
       if(lineMan === "Hourly"){
 
@@ -385,7 +385,7 @@ function LineChart({symbol, lineMan, overlay, setOverlayState}){
       <span className='exp-button' onClick={()=>{
         if(overlay===""){setOverlayState(prev=>{prev.set("overlay","line"); return prev;})}
         else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
-        }}>Expand</span>
+        }}><a href='#overlay'>{overlay!==""? "close" : <img src="exp.png" alt="exp" />}</a></span>
     </div>
   </div>
 }
@@ -482,7 +482,6 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
       }
     }]
   })
-
   
   return <div>
     <Chart options={options} series = {series} type="bar" height={'400px'} width={'400px'}/>
@@ -490,7 +489,7 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
       <span className='exp-button' onClick={()=>{
         if(overlay===""){setOverlayState(prev=>{prev.set("overlay","bar"); return prev;})}
         else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
-        }}>Expand</span>
+        }}><a href='#overlay'>{overlay!==""? "close" : <img src="exp.png" alt="exp" />}</a></span>
     </div>
   </div>
 }
