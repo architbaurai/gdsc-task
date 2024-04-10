@@ -272,3 +272,13 @@ header button:hover{
     z-index: 2;
 }
 
+.exp-container{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.exp-container span{
+    margin: 0em 2em;
+}
+

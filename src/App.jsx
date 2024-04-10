@@ -251,13 +251,15 @@ function PiChart({symbol, piMan, overlay, setOverlayState}){
       }]
     }
 
-  return <>
+  return <div>
     <Chart options={options} series = {series} type={piMan} height={'400px'} width = {'400px'}/>
-    <p className='exp-button' onClick={()=>{
-      if(overlay===""){setOverlayState(prev=>{prev.set("overlay","pi"); return prev;})}
-      else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
-      }}>Expand</p>
-  </>
+    <div className="exp-container">
+      <span className='exp-button' onClick={()=>{
+        if(overlay===""){setOverlayState(prev=>{prev.set("overlay","pi"); return prev;})}
+        else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
+        }}>Expand</span>
+    </div>
+  </div>
 }
 
 function LineChart({symbol, lineMan, overlay, setOverlayState}){
@@ -377,13 +379,15 @@ function LineChart({symbol, lineMan, overlay, setOverlayState}){
 })
 
 
-  return<>
+  return <div>
     <Chart options={options} series = {series} type="line" height={'400px'} width = {'700px'}/>
-    <p className='exp-button' onClick={()=>{
-      if(overlay===""){setOverlayState(prev=>{prev.set("overlay","line"); return prev;})}
-      else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
-      }}>Expand</p>
-  </>
+    <div className="exp-container">
+      <span className='exp-button' onClick={()=>{
+        if(overlay===""){setOverlayState(prev=>{prev.set("overlay","line"); return prev;})}
+        else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
+        }}>Expand</span>
+    </div>
+  </div>
 }
 
 
@@ -480,13 +484,15 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
   })
 
   
-  return <>
+  return <div>
     <Chart options={options} series = {series} type="bar" height={'400px'} width={'400px'}/>
-    <p className='exp-button' onClick={()=>{
-      if(overlay===""){setOverlayState(prev=>{prev.set("overlay","bar"); return prev;})}
-      else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
-      }}>Expand</p>
-  </>
+    <div className="exp-container">
+      <span className='exp-button' onClick={()=>{
+        if(overlay===""){setOverlayState(prev=>{prev.set("overlay","bar"); return prev;})}
+        else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
+        }}>Expand</span>
+    </div>
+  </div>
 }
 
 
