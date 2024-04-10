@@ -2,14 +2,19 @@ import './style.css';
 import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'
 import { ReactBingmaps } from 'react-bingmaps';
+import { useSearchParams } from 'react-router-dom';
 
 function App() {
 
-  const [symbol, setSymbol] = useState("Vellore");
+  const [urlsymbol, setSymbol] = useSearchParams({symbol:"Vellore"});
+
+  const checkS = urlsymbol.get("symbol");
+
+  const symbol = (checkS === null || checkS === "")? "Vellore" : checkS;
 
   return <div className="main">
 
-    <Header symbol = {symbol} setSymbol = {setSymbol}/>
+    <Header setSymbol = {setSymbol}/>
 
     <Content symbol = {symbol}/>
 
@@ -17,14 +22,14 @@ function App() {
 }
 
 
-function Header({symbol, setSymbol}){
+function Header({setSymbol}){
 
   const [temp, setTemp] = useState("");
 
   return <header>
     <form action="submit">
       <input type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
-      <button onClick={(e)=>{e.preventDefault(); setSymbol(temp)}}>Search</button>
+      <button onClick={(e)=>{e.preventDefault(); if(temp !== "") {setSymbol(prev=>{prev.set("symbol",temp); return prev;})}}}>Search</button>
     </form>
 
   </header>
@@ -38,8 +43,6 @@ function Content({symbol}){
 
   return <div className="main-container">
     
-    {/* <h1>{symbol}</h1> */}
-
     <div className="statistics">
 
       <StatContainer type="info">
