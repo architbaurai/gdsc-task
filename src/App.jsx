@@ -2,14 +2,19 @@ import './style.css';
 import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'
 import { ReactBingmaps } from 'react-bingmaps';
+import { useSearchParams } from 'react-router-dom';
 
 function App() {
 
-  const [symbol, setSymbol] = useState("Vellore");
+  const [urlsymbol, setSymbol] = useSearchParams({symbol:"Vellore"});
+
+  const checkS = urlsymbol.get("symbol");
+
+  const symbol = (checkS === null || checkS === "")? "Vellore" : checkS;
 
   return <div className="main">
 
-    <Header symbol = {symbol} setSymbol = {setSymbol}/>
+    <Header setSymbol = {setSymbol}/>
 
     <Content symbol = {symbol}/>
 
@@ -17,14 +22,14 @@ function App() {
 }
 
 
-function Header({symbol, setSymbol}){
+function Header({setSymbol}){
 
   const [temp, setTemp] = useState("");
 
   return <header>
     <form action="submit">
       <input type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
-      <button onClick={(e)=>{e.preventDefault(); setSymbol(temp)}}>Search</button>
+      <button onClick={(e)=>{e.preventDefault(); if(temp !== "") {setSymbol(prev=>{prev.set("symbol",temp); return prev;})}}}>Search</button>
     </form>
 
   </header>
@@ -38,8 +43,6 @@ function Content({symbol}){
 
   return <div className="main-container">
     
-    {/* <h1>{symbol}</h1> */}
-
     <div className="statistics">
 
       <StatContainer type="info">
@@ -66,10 +69,17 @@ function Content({symbol}){
 
 function StatContainer({type, children, setMan}){
 
+  const secHead = new Map();
+
+  secHead.set('info', "Current Weather");
+  secHead.set('pi', "Air Composition");
+  secHead.set('bar', "Ultra Violet Index");
+  secHead.set('line', "Forecast");
+
   return <div className = {`stat-container ${type}`} >
 
     <div className='secondary-header'>
-      <span className='secondary-heading'>{`Pie chart`}</span>
+      <span className='secondary-heading'>{`${secHead.get(type)}`}</span>
       <Manipulator type={type} setMan={setMan}/>
     </div>
 
@@ -428,6 +438,7 @@ function BarChart({symbol, barMan}){
 function Overview({symbol}){
 
   const [inf, setInf] = useState(["Vellore", "Tamil Nadu", "India", 12.93, 79.13, "", 22.3, ""]);
+  const [map, setMap] = useState(null);
 
   useEffect(()=>{
     async function getCurrent(){
@@ -448,11 +459,38 @@ function Overview({symbol}){
         let cond = res.current.condition.text;
 
         setInf([city, region, country, lat, lon, ico, temp, cond]);
-      })
+
+        return res;
+      }).then((res=>{
+        setMap(
+          <ReactBingmaps 
+            bingmapKey = "AnNq5ZsNTOez4ZTeBDa-N3yrvAgAszEv8XTFP9dVvsm-hm7ykBgVffLZAxVjs1t5" 
+            center = {[res.location.lat, res.location.lon]}
+            pushPins = {
+              [
+                {
+                  "location":[res.location.lat, res.location.lon], "option":{ color: '#2F80ED' }
+                }
+              ]
+            }
+            > 
+          </ReactBingmaps>
+        )
+      }))
     }
 
     getCurrent();
-  },[symbol, inf])
+  },[symbol])
+
+  const link = encodeURI(window.location.href);
+  const msg = encodeURI(`Hey ! Checkout the climate analysis of ${symbol}:\n`)
+
+  const fb_link = `https://www.facebook.com/share.php?u=${link}&text=${msg}`;
+  const tw_link = `http://twitter.com/share?&url=${link}&text=${msg}`;
+  const rd_link = `http://www.reddit.com/submit?url=${link}&title=${msg}`;
+  const wa_link = `https://wa.me/?text=${msg}${link}`;
+
+
 
   return <div className='info-card'>
     <div className="weather-info">
@@ -462,7 +500,7 @@ function Overview({symbol}){
       <p><strong>{inf[1]}, {inf[2]}</strong></p>
       <div className="temperature">
       <img src={inf[5]} alt="" />
-      <div>
+      <div className='temp-text'>
         <p>{inf[6]}°C</p>
         <p>{inf[7]}</p>
       </div>
@@ -475,26 +513,15 @@ function Overview({symbol}){
 
       <div className="soc">
 
-        <a href="none" className="facebook" target ="blank"><i className="fab fa-facebook"></i></a>
-        <a href="none" className="twitter" target ="blank"><i className="fab fa-twitter"></i></a>
-        <a href="none" className="reddit" target ="blank"><i className="fab fa-reddit"></i></a>
-        <a href="none" className="whatsapp" target ="blank"><div className="fab fa-whatsapp"></div></a>
+        <a href={fb_link} className="facebook" target ="blank"><i className="fab fa-facebook"></i></a>
+        <a href={tw_link} className="twitter" target ="blank"><i className="fab fa-twitter"></i></a>
+        <a href={rd_link} className="reddit" target ="blank"><i className="fab fa-reddit"></i></a>
+        <a href={wa_link} className="whatsapp" target ="blank"><div className="fab fa-whatsapp"></div></a>
       </div>
     </div>
 
     <div className="map">
-      <ReactBingmaps 
-        bingmapKey = "AnNq5ZsNTOez4ZTeBDa-N3yrvAgAszEv8XTFP9dVvsm-hm7ykBgVffLZAxVjs1t5" 
-        center = {[inf[3], inf[4]]}
-        pushPins = {
-          [
-            {
-              "location":[inf[3], inf[4]], "option":{ color: '#2F80ED' }
-            }
-          ]
-        }
-      > 
-      </ReactBingmaps>
+      {map}
     </div>
   </div>
 }
