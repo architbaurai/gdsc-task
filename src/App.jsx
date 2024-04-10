@@ -5,7 +5,6 @@ import { ReactBingmaps } from 'react-bingmaps';
 
 function App() {
 
-
   const [symbol, setSymbol] = useState("Vellore");
 
   return <div className="main">
@@ -39,7 +38,7 @@ function Content({symbol}){
 
   return <div className="main-container">
     
-    <h1>{symbol}</h1>
+    {/* <h1>{symbol}</h1> */}
 
     <div className="statistics">
 
@@ -461,14 +460,25 @@ function Overview({symbol}){
       <div>
       <p><strong>{inf[0]},</strong></p>
       <p><strong>{inf[1]}, {inf[2]}</strong></p>
+      <div className="temperature">
       <img src={inf[5]} alt="" />
-      <p>{inf[6]}°C,</p>
-      <p>{inf[7]}</p>
+      <div>
+        <p>{inf[6]}°C,</p>
+        <p>{inf[7]}</p>
+      </div>
+      </div>
       </div>
 
+      <div className="date">
+        
+      </div>
 
       <div className="soc">
 
+        <a href="none" className="facebook" target ="blank"><i className="fab fa-facebook"></i></a>
+        <a href="none" className="twitter" target ="blank"><i className="fab fa-twitter"></i></a>
+        <a href="none" className="reddit" target ="blank"><i className="fab fa-reddit"></i></a>
+        <a href="none" className="whatsapp" target ="blank"><div className="fab fa-whatsapp"></div></a>
       </div>
     </div>
 
