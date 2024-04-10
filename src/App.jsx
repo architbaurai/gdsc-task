@@ -27,10 +27,17 @@ function Header({setSymbol}){
   const [temp, setTemp] = useState("");
 
   return <header>
+
+    <div className="search-container">
+
+    <p className="logo">Weather Co.</p>
+
     <form action="submit">
       <input type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
-      <button onClick={(e)=>{e.preventDefault(); if(temp !== "") {setSymbol(prev=>{prev.set("symbol",temp); return prev;})}}}>Search</button>
+      <button onClick={(e)=>{e.preventDefault(); if(temp !== "") {setSymbol(prev=>{prev.set("symbol",temp); return prev;})} e.target.value = '';}}><strong>Search</strong></button>
     </form>
+
+    </div>
 
   </header>
 }
@@ -483,7 +490,7 @@ function Overview({symbol}){
   },[symbol])
 
   const link = encodeURI(window.location.href);
-  const msg = encodeURI(`Hey ! Checkout the climate analysis of ${symbol}:\n`)
+  const msg = encodeURI(`Hey ! Checkout the climate analysis of ${symbol} at Weather Co. \n`)
 
   const fb_link = `https://www.facebook.com/share.php?u=${link}&text=${msg}`;
   const tw_link = `http://twitter.com/share?&url=${link}&text=${msg}`;
