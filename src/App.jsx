@@ -463,7 +463,7 @@ function Overview({symbol}){
       <div className="temperature">
       <img src={inf[5]} alt="" />
       <div>
-        <p>{inf[6]}°C,</p>
+        <p>{inf[6]}°C</p>
         <p>{inf[7]}</p>
       </div>
       </div>
