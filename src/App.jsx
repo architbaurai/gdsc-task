@@ -24,6 +24,7 @@ function App() {
 function Header({setSymbol}){
 
   const [temp, setTemp] = useState("");
+  const [errMsg, setErrMsg] = useState(null);
 
 
   function getLoc(){
@@ -60,20 +61,49 @@ function Header({setSymbol}){
 
   getLoc();
 
-  return <header>
 
-    <div className="search-container">
+  async function handleSearch(e, temp){
 
-    <p className="logo">Weather Co.</p>
+    e.preventDefault();
 
-    <form action="submit">
-      <input value = {temp} type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
-      <button onClick={(e)=>{e.preventDefault(); if(temp !== "") {setSymbol(prev=>{prev.set("symbol",temp); return prev;})} setTemp((s)=>"");}}><strong>Search</strong></button>
-    </form>
+    await fetch(`http://api.weatherapi.com/v1/current.json?key=633efb86edba4c3182c115344240904&q=${temp}&aqi=no`)
+    .then(res=>{
 
-    </div>
+      if(res.ok){
+        return res.json()
+      } else {
+        throw new Error()
+      }
+    })
+    .then(res=>{
+        setSymbol(prev=>{prev.set("symbol",temp); return prev;})
+        setErrMsg(null);
+    })
+    .catch((error)=>{
+      console.log('No such location')
+      setErrMsg(<div className='err-msg'>No such location found</div>)
+    })
+    
 
-  </header>
+    setTemp((s)=>"");
+  }
+
+  return <><header>
+
+      <div className="search-container">
+
+      <p className="logo">Weather Co.</p>
+
+      <form action="submit">
+        <input value = {temp} type="text" onChange={(e)=>{setTemp((s)=>e.target.value)}}/>
+        <button onClick={(e)=>{handleSearch(e, temp)}}><strong>Search</strong></button>
+      </form>
+
+      </div>
+
+    </header>
+    {errMsg}
+  </>
 }
 
 function Content({symbol}){
@@ -298,7 +328,7 @@ function PiChart({symbol, piMan, overlay, setOverlayState}){
       <span className='exp-button' onClick={()=>{
         if(overlay===""){setOverlayState(prev=>{prev.set("overlay","pi"); return prev;})}
         else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
-        }}><a href='#overlay'>{overlay!==""? "close" : <img src="exp.png" alt="exp" />}</a></span>
+        }}><a href='#overlay'>{overlay!==""? "close" : "share"}</a></span>
     </div>
   </div>
 }
@@ -441,7 +471,7 @@ function LineChart({symbol, lineMan, overlay, setOverlayState}){
       <span className='exp-button' onClick={()=>{
         if(overlay===""){setOverlayState(prev=>{prev.set("overlay","line"); return prev;})}
         else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
-        }}><a href='#overlay'>{overlay!==""? "close" : <img src="exp.png" alt="exp" />}</a></span>
+        }}><a href='#overlay'>{overlay!==""? "close" : "share"}</a></span>
     </div>
   </div>
 }
@@ -561,7 +591,7 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
       <span className='exp-button' onClick={()=>{
         if(overlay===""){setOverlayState(prev=>{prev.set("overlay","bar"); return prev;})}
         else{setOverlayState(prev=>{prev.set("overlay",""); return prev;})}
-        }}><a href='#overlay'>{overlay!==""? "close" : <img src="exp.png" alt="exp" />}</a></span>
+        }}><a href='#overlay'>{overlay!==""? "close" : "share"}</a></span>
     </div>
   </div>
 }

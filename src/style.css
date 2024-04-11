@@ -302,3 +302,10 @@ header button:hover{
     color: #EB5757;
 }
 
+.err-msg{
+    font-size: 1rem;
+    font-weight: bold;
+    color: #EB5757;
+    text-align: center;
+}
+
