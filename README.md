@@ -22,13 +22,16 @@ These technologies and libraries were chosen to build a modern, fast, and user-f
 - **Ultra Violet Index**: Bar-Chart displaying UV index of your location on an hourly bases which could be easily sorted for your needs.
 - **Social Media sharing**: Share different climatic data visualizations of your location on different social media platforms such as Facebook, Reddit, Twitter and Whatsapp.
 - **Responsive Layout**: Responsive to all screen sizes ranging from keypad-phone screens to ultra wide screens
-- **Search Locations**: Easily search for and add multiple locations to get weather updates.
+- **Search Locations**: Easily search for multiple locations to get weather updates.
 - **Interactive Map**: Explore the map to see conditions in different areas.
 - **User-Friendly Interface**: Enjoy a visually appealing and intuitive design.
 
 ## 📸 Screenshots
 
-![Weather Co App](URL_TO_SCREENSHOT)
+![Weather Co App](./screenshots/pc.png)
+![Weather Co App](./screenshots/tablet.png)
+![Weather Co App](./screenshots/mobile.png)
+![Weather Co App](./screenshots/share.png)
 
 ## 💻 Installation
 
