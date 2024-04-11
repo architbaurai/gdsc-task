@@ -1,6 +1,6 @@
 # ☀️ Weather Co.
 
-Welcome to **Weather Co. **! This is a front-end application built with React that provides real-time weather updates and forecasts. With Weather Co, you can stay informed about the current weather conditions and future forecasts in your desired location.
+Welcome to **Weather Co.**! This is a front-end application built with React that provides real-time weather updates and forecasts. With Weather Co, you can stay informed about the current weather conditions and future forecasts in your desired location.
 
 ## 🛠️ Technologies and Libraries Used
 
@@ -28,9 +28,13 @@ These technologies and libraries were chosen to build a modern, fast, and user-f
 
 ## 📸 Screenshots
 
+- PC version:
 ![Weather Co App](./screenshots/pc.png)
+- Tablet Version:
 ![Weather Co App](./screenshots/tablet.png)
+- Mobile Version:
 ![Weather Co App](./screenshots/mobile.png)
+- Share with others!
 ![Weather Co App](./screenshots/share.png)
 
 ## 💻 Installation
