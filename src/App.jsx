@@ -6,11 +6,11 @@ import { useSearchParams } from 'react-router-dom';
 
 function App() {
 
-  const [urlsymbol, setSymbol] = useSearchParams({symbol:"Vellore"});
+  const [urlsymbol, setSymbol] = useSearchParams({symbol:"San Francisco"});
 
   const checkS = urlsymbol.get("symbol");
 
-  const symbol = (checkS === null || checkS === "")? "Vellore" : checkS;
+  const symbol = (checkS === null || checkS === "")? "San Francisco" : checkS;
 
   return <div className="main">
 
@@ -24,6 +24,41 @@ function App() {
 function Header({setSymbol}){
 
   const [temp, setTemp] = useState("");
+
+
+  function getLoc(){
+    if (navigator.geolocation && sessionStorage.getItem("coordinates") === null) {
+
+      let options = {
+        enableHighAccuracy: false
+      }
+
+      let onErr = ()=>console.log('error fetching coordinates');
+
+      navigator.geolocation.getCurrentPosition(setLoc, onErr, options);
+    }
+  }
+
+  async function setLoc(position){
+
+      await sessionStorage.setItem("coordinates",JSON.stringify({lat:position.coords.latitude, lon:position.coords.longitude}));
+
+      let crd = JSON.parse(sessionStorage.getItem("coordinates"));
+      let lati = crd.lat;
+      let longi = crd.lon;
+
+      await fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lati}&lon=${longi}&limit=${1}&appid=${`1cf6d90ea9facabbb0daec28a9880704`}`)
+      .then((res)=>res.json())
+      .then((res)=>{
+
+        let city = res[0].name;
+
+        console.log(city);
+        setSymbol(prev=>{prev.set("symbol",city); return prev;})
+      })
+  }
+
+  getLoc();
 
   return <header>
 
@@ -534,7 +569,7 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
 
 function Overview({symbol}){
 
-  const [inf, setInf] = useState(["Vellore", "Tamil Nadu", "India", 12.93, 79.13, "", 22.3, ""]);
+  const [inf, setInf] = useState(["San Francisco", "California", "United States of America", 37.77, 122.41, "", 22.3, ""]);
   const [map, setMap] = useState(null);
 
   useEffect(()=>{
