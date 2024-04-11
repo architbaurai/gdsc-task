@@ -28,13 +28,12 @@ These technologies and libraries were chosen to build a modern, fast, and user-f
 
 ## 📸 Screenshots
 
-- PC version:
 ![Weather Co App](./screenshots/pc.png)
-- Tablet Version:
+
 ![Weather Co App](./screenshots/tablet.png)
-- Mobile Version:
+
 ![Weather Co App](./screenshots/mobile.png)
-- Share with others!
+
 ![Weather Co App](./screenshots/share.png)
 
 ## 💻 Installation
