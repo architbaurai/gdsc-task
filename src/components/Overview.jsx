@@ -59,7 +59,7 @@ export default function Overview({symbol}){
     },[symbol])
   
     const link = encodeURIComponent(window.location.href);
-    const msg = encodeURIComponent(`Hey ! Checkout the climate analysis of ${symbol} at Weather Co.\n`)
+    const msg = encodeURIComponent(`Hey ! Checkout the climate analysis of ${symbol} at Weather Co \n`)
   
     return <div className='info-card'>
       <div className="weather-info">
