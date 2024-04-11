@@ -53,22 +53,26 @@ function Content({symbol}){
 
   const chartComp = new Map();
 
+  const view = (overlay==="pi")? "air composition" : (overlay==="line")? "weather forecast" : "UV index analysis";
+  const link = encodeURIComponent(window.location.href);
+  const msg = `Hey ! Checkout the ${view} of ${symbol} at Weather Co.\n`
+
   chartComp.set('pi', <><StatContainer type = "pi" setMan={setPiMan}>
                         <PiChart symbol = {symbol} piMan={piMan} overlay = {overlay} setOverlayState={setOverlayState}/>
                       </StatContainer>
-                      <Socials fb = {null} tw = {null} rd = {null} wa = {null}/>
+                      <Socials link = {link} msg={msg}/>
                       </>);
 
   chartComp.set('line',<><StatContainer type="line" setMan={setLineMan}>
                           <LineChart symbol = {symbol} lineMan = {lineMan} overlay = {overlay} setOverlayState={setOverlayState}/>
                         </StatContainer>
-                        <Socials fb = {null} tw = {null} rd = {null} wa = {null}/>
+                        <Socials link = {link} msg={msg}/>
                         </>)
 
   chartComp.set('bar',<><StatContainer type="bar" setMan={setBarMan}>
                         <BarChart symbol = {symbol} barMan = {barMan} overlay = {overlay} setOverlayState={setOverlayState}/>
                        </StatContainer>
-                       <Socials fb = {null} tw = {null} rd = {null} wa = {null}/>                     
+                       <Socials link = {link} msg={msg}/>                     
                       </>)
 
 
@@ -297,7 +301,7 @@ function LineChart({symbol, lineMan, overlay, setOverlayState}){
   },[symbol, lineMan])
 
 
-  const [options, setOptions] = useState({
+  const options = {
 
   chart: {
     type: 'area',
@@ -376,7 +380,7 @@ function LineChart({symbol, lineMan, overlay, setOverlayState}){
       }
     }
   }]
-})
+}
 
 
   return <div>
@@ -438,7 +442,7 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
     getForecast();
   },[symbol, barMan])
 
-  const [options, setOptions] = useState({
+  const options = {
     chart: {
       type: 'bar',
 
@@ -481,7 +485,7 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
         }
       }
     }]
-  })
+  }
   
   return <div>
     <Chart options={options} series = {series} type="bar" height={'400px'} width={'400px'}/>
@@ -542,15 +546,8 @@ function Overview({symbol}){
     getCurrent();
   },[symbol])
 
-  const link = encodeURI(window.location.href);
-  const msg = encodeURI(`Hey ! Checkout the climate analysis of ${symbol} at Weather Co. \n`)
-
-  const fb_link = `https://www.facebook.com/share.php?u=${link}&text=${msg}`;
-  const tw_link = `http://twitter.com/share?&url=${link}&text=${msg}`;
-  const rd_link = `http://www.reddit.com/submit?url=${link}&title=${msg}`;
-  const wa_link = `https://wa.me/?text=${msg}${link}`;
-
-
+  const link = encodeURIComponent(window.location.href);
+  const msg = encodeURIComponent(`Hey ! Checkout the climate analysis of ${symbol} at Weather Co.\n`)
 
   return <div className='info-card'>
     <div className="weather-info">
@@ -567,7 +564,7 @@ function Overview({symbol}){
       </div>
       </div>
 
-      <Socials fb = {fb_link} tw = {tw_link} rd = {rd_link} wa = {wa_link}/>
+      <Socials link={link} msg = {msg}/>
 
     </div>
 
@@ -577,14 +574,19 @@ function Overview({symbol}){
   </div>
 }
 
-function Socials({fb, tw, rd, wa}){
+function Socials({link, msg}){
+
+  const fb_link = `https://www.facebook.com/share.php?u=${link}&text=${msg}`;
+  const tw_link = `http://twitter.com/share?&url=${link}&text=${msg}`;
+  const rd_link = `http://www.reddit.com/submit?url=${link}&title=${msg}`;
+  const wa_link = `https://wa.me/?text=${msg}${link}`;
 
   return <div className="soc">
 
-    <a href={fb} className="facebook" target ="blank"><i className="fab fa-facebook"></i></a>
-    <a href={tw} className="twitter" target ="blank"><i className="fab fa-twitter"></i></a>
-    <a href={rd} className="reddit" target ="blank"><i className="fab fa-reddit"></i></a>
-    <a href={wa} className="whatsapp" target ="blank"><div className="fab fa-whatsapp"></div></a>
+    <a href={fb_link} className="facebook" target ="blank"><i className="fab fa-facebook"></i></a>
+    <a href={tw_link} className="twitter" target ="blank"><i className="fab fa-twitter"></i></a>
+    <a href={rd_link} className="reddit" target ="blank"><i className="fab fa-reddit"></i></a>
+    <a href={wa_link} className="whatsapp" target ="blank"><div className="fab fa-whatsapp"></div></a>
   </div>
 }
 
