@@ -1,8 +1,8 @@
 export default function Socials({link, msg}){
 
     const fb_link = `https://www.facebook.com/share.php?u=${link}&text=${msg}`;
-    const tw_link = `http://twitter.com/share?&url=${link}&text=${msg}`;
-    const rd_link = `http://www.reddit.com/submit?url=${link}&title=${msg}`;
+    const tw_link = `https://twitter.com/share?&url=${link}&text=${msg}`;
+    const rd_link = `https://www.reddit.com/submit?url=${link}&title=${msg}`;
     const wa_link = `https://wa.me/?text=${msg}${link}`;
   
     return <div className="soc">

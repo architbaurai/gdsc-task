@@ -28,7 +28,7 @@ export default function Header({setSymbol}){
         let lati = crd.lat;
         let longi = crd.lon;
   
-        await fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lati}&lon=${longi}&limit=${1}&appid=${`1cf6d90ea9facabbb0daec28a9880704`}`)
+        await fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lati}&lon=${longi}&limit=${1}&appid=${`1cf6d90ea9facabbb0daec28a9880704`}`)
         .then((res)=>{
           if(res.ok){
             return res.json()
@@ -55,7 +55,7 @@ export default function Header({setSymbol}){
   
       e.preventDefault();
   
-      await fetch(`http://api.weatherapi.com/v1/current.json?key=633efb86edba4c3182c115344240904&q=${temp}&aqi=no`)
+      await fetch(`https://api.weatherapi.com/v1/current.json?key=633efb86edba4c3182c115344240904&q=${temp}&aqi=no`)
       .then(res=>{
   
         if(res.ok){
