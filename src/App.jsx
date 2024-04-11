@@ -49,13 +49,22 @@ function Header({setSymbol}){
       let longi = crd.lon;
 
       await fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lati}&lon=${longi}&limit=${1}&appid=${`1cf6d90ea9facabbb0daec28a9880704`}`)
-      .then((res)=>res.json())
+      .then((res)=>{
+        if(res.ok){
+          return res.json()
+        } else {
+          throw new Error("Failed to fetch")
+        }
+      })
       .then((res)=>{
 
         let city = res[0].name;
 
         console.log(city);
         setSymbol(prev=>{prev.set("symbol",city); return prev;})
+      })
+      .catch((error)=>{
+        console.log("Failed to fetch")
       })
   }
 
@@ -80,7 +89,6 @@ function Header({setSymbol}){
         setErrMsg(null);
     })
     .catch((error)=>{
-      console.log('No such location')
       setErrMsg(<div className='err-msg'>No such location found</div>)
     })
     
@@ -232,11 +240,20 @@ function PiChart({symbol, piMan, overlay, setOverlayState}){
 
     async function getForecast(){
       await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
-      .then((res)=>res.json())
+      .then((res)=>{
+        if(res.ok){
+          return res.json()
+        } else {
+          throw new Error("Failed to fetch")
+        }
+      })
       .then((res=>{
         const piData = res.forecast.forecastday[0].day.air_quality;
         setSeries([piData.co, piData.no2, piData.o3, piData.so2, piData.pm2_5, piData.pm10])
       }))
+      .catch((error)=>{
+        console.log("Failed to fetch")
+      })
     }
 
     getForecast();
@@ -347,17 +364,35 @@ function LineChart({symbol, lineMan, overlay, setOverlayState}){
       if(lineMan === "Hourly"){
 
         await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=no&alerts=no`)
-        .then((res)=>res.json())
+        .then((res)=>{
+          if(res.ok){
+            return res.json()
+          } else {
+            throw new Error("Failed to fetch")
+          }
+        })
         .then((res=>{
           timeData = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.temp_c}});
         }))
+        .catch((error)=>{
+          console.log("Failed to fetch")
+        })
       } else {
 
         await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=7&aqi=no&alerts=no`)
-        .then((res)=>res.json())
+        .then((res)=>{
+          if(res.ok){
+            return res.json()
+          } else {
+            throw new Error("Failed to fetch")
+          }
+        })
         .then((res=>{
           timeData= res.forecast.forecastday.map((val)=>{return {x:val.date, y:val.day.avgtemp_c}});
         }))
+        .catch((error)=>{
+          console.log('Failed to fetch')
+        })
       }
 
       setSeries([{data: timeData}]);
@@ -504,7 +539,13 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
       let dsc = (a, b) => b.y - a.y;
 
       await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
-      .then((res)=>res.json())
+      .then((res)=>{
+        if(res.ok){
+          return res.json()
+        } else {
+          throw new Error("Failed to fetch")
+        }
+      })
       .then((res=>{
         
         uv = res.forecast.forecastday[0].hour.map((val)=>{return {x:val.time, y:val.uv}});
@@ -520,6 +561,9 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
         setSeries([{data: uv}]);
         
       }))
+      .catch((error)=>{
+        console.log("Failed to fetch")
+      })
     }
     getForecast();
   },[symbol, barMan])
@@ -606,7 +650,13 @@ function Overview({symbol}){
     async function getCurrent(){
 
       await fetch(`http://api.weatherapi.com/v1/current.json?key=633efb86edba4c3182c115344240904&q=${symbol}&aqi=no`)
-      .then((res)=>res.json())
+      .then((res)=>{
+        if(res.ok){
+          return res.json()
+        } else {
+          throw new Error("Failed to fetch")
+        }
+      })
       .then((res)=>{
 
         let city = res.location.name;
@@ -638,7 +688,9 @@ function Overview({symbol}){
             > 
           </ReactBingmaps>
         )
-      }))
+      })).catch((error)=>{
+        console.log("Failed to fetch");
+      })
     }
 
     getCurrent();
@@ -687,7 +739,5 @@ function Socials({link, msg}){
     <a href={wa_link} className="whatsapp" target ="blank"><div className="fab fa-whatsapp"></div></a>
   </div>
 }
-
-
 
 export default App;
