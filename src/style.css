@@ -1,3 +1,7 @@
+html{
+    scroll-behavior: smooth;
+}
+
 body{
     margin: 0;
     font-family:Montserrat;
@@ -133,6 +137,7 @@ header button:hover{
 
 .chart{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
     padding: 1.5em 0em;
@@ -262,3 +267,38 @@ header button:hover{
         flex-direction: row;
     }
 }
+
+.overlay{
+    position: absolute;
+    left: 50%;
+    top: 62.5%;
+    transform: translate(-50%,-50%);
+    z-index: 2;
+}
+
+.exp-container{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.exp-container :hover{
+    cursor: pointer;
+}
+
+.exp-container span{
+    margin: 0em 2em;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: #EB5757;
+}
+
+.exp-container img{
+    width: 25px;
+}
+
+.exp-container a{
+    text-decoration: none;
+    color: #EB5757;
+}
+
