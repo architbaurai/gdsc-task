@@ -11,7 +11,7 @@ export default function Overview({symbol}){
     useEffect(()=>{
       async function getCurrent(){
   
-        await fetch(`http://api.weatherapi.com/v1/current.json?key=633efb86edba4c3182c115344240904&q=${symbol}&aqi=no`)
+        await fetch(`https://api.weatherapi.com/v1/current.json?key=633efb86edba4c3182c115344240904&q=${symbol}&aqi=no`)
         .then((res)=>{
           if(res.ok){
             return res.json()

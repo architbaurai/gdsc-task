@@ -14,7 +14,7 @@ export default function LineChart({symbol, lineMan, overlay, setOverlayState}){
   
         if(lineMan === "Hourly"){
   
-          await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=no&alerts=no`)
+          await fetch(`https://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=no&alerts=no`)
           .then((res)=>{
             if(res.ok){
               return res.json()
@@ -30,7 +30,7 @@ export default function LineChart({symbol, lineMan, overlay, setOverlayState}){
           })
         } else {
   
-          await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=7&aqi=no&alerts=no`)
+          await fetch(`https://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=7&aqi=no&alerts=no`)
           .then((res)=>{
             if(res.ok){
               return res.json()

@@ -27,7 +27,7 @@ export default function BarChart({symbol, barMan, overlay, setOverlayState}){
         let asc = (a, b) => a.y - b.y;
         let dsc = (a, b) => b.y - a.y;
   
-        await fetch(`http://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
+        await fetch(`https://api.weatherapi.com/v1/forecast.json?key=633efb86edba4c3182c115344240904&q=${symbol}&days=1&aqi=yes&alerts=no`)
         .then((res)=>{
           if(res.ok){
             return res.json()
