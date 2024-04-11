@@ -208,7 +208,7 @@ function PiChart({symbol, piMan, overlay, setOverlayState}){
         },
 
         style:{
-          fontSize: '10px'
+          fontSize: '13px'
         }
       },
       
@@ -222,7 +222,9 @@ function PiChart({symbol, piMan, overlay, setOverlayState}){
 
         horizontalALign: 'right',
 
-        position: 'right'
+        position: 'right',
+
+        fontSize:"16px"
       },
 
       responsive: [{
@@ -242,7 +244,7 @@ function PiChart({symbol, piMan, overlay, setOverlayState}){
             width:'300px'
           },
           legend:{
-            position:'bottom'
+            position:'bottom',
           }
         }
       },{
@@ -326,11 +328,26 @@ function LineChart({symbol, lineMan, overlay, setOverlayState}){
   },
   yaxis: {
     title: {
-      text: 'Temperature'
+      text: 'Temperature',
+        style:{
+          fontSize:"13px",
+        }
+    },
+    labels:{
+      style:{
+        fontSize:"13px",
+        fontFamily:"Montserrat"
+      }
     }
   },
   xaxis: {
     type: 'datetime',
+    labels:{
+      style:{
+        fontSize:"13px",
+        fontFamily:"Montserrat"
+      }
+    }
   },
   responsive: [{
     breakpoint: 1350,
@@ -453,7 +470,23 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
 
     plotOptions: {
       bar: {
-        horizontal: true
+        horizontal: true,
+        borderRadius: 3
+      }
+    },
+    yaxis: {
+      labels:{
+        style:{
+          fontSize:"13px",
+        }
+      }
+    },
+    xaxis: {
+      labels:{
+        style:{
+          fontSize:"13px",
+          fontFamily:"Montserrat"
+        }
       }
     },
 
@@ -488,7 +521,7 @@ function BarChart({symbol, barMan, overlay, setOverlayState}){
   }
   
   return <div>
-    <Chart options={options} series = {series} type="bar" height={'400px'} width={'400px'}/>
+    <Chart options={options} series = {series} type="bar" height={'413px'} width={'400px'}/>
     <div className="exp-container">
       <span className='exp-button' onClick={()=>{
         if(overlay===""){setOverlayState(prev=>{prev.set("overlay","bar"); return prev;})}
