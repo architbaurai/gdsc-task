@@ -34,7 +34,7 @@ h1{
 }
 
 .secondary-heading{
-    font-size: 1.125rem;
+    font-size: 1.3rem;
     font-weight: bold;
 }
 
@@ -127,7 +127,7 @@ header button:hover{
     background-color: transparent;
     color: #EB5757;
 
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: bold;
 }
 
@@ -166,7 +166,7 @@ header button:hover{
 }
 
 .fab{
-    font-size: 1.5em;
+    font-size: 1.8em;
     color: #2F80ED;
 }
 
@@ -288,7 +288,7 @@ header button:hover{
 
 .exp-container span{
     margin: 0em 2em;
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: bold;
     color: #EB5757;
 }
