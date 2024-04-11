@@ -21,7 +21,7 @@ export default function Content({symbol}){
   
     const view = (overlay==="pi")? "air composition" : (overlay==="line")? "weather forecast" : "UV index analysis";
     const link = encodeURIComponent(window.location.href);
-    const msg = `Hey ! Checkout the ${view} of ${symbol} at Weather Co.\n`
+    const msg = `Hey ! Checkout the ${view} of ${symbol} at Weather Co\n`
   
     chartComp.set('pi', <><StatContainer type = "pi" setMan={setPiMan}>
                           <PiChart symbol = {symbol} piMan={piMan} overlay = {overlay} setOverlayState={setOverlayState}/>
